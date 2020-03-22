@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace Calculadora
 {
-    public partial class Form1 : Form
+    public partial class exp : Form
     {
         //aquí declaro las variables de instancia
 
@@ -19,11 +19,12 @@ namespace Calculadora
         /*en el string operacion guardo la operacion
         que ha sido pulsada*/
         String operacion = "";
+        String accion = "";
 
 
 
 
-        public Form1()
+        public exp()
         {
             InitializeComponent();
         }
@@ -37,7 +38,14 @@ namespace Calculadora
             }
             else
             {
-                display.Text = display.Text + boton.Text;
+                if (boton.Text != ".")
+                {
+                    display.Text = display.Text + boton.Text;
+                }
+                else if (boton.Text == "." && !display.Text.Contains('.'))
+                {
+                    display.Text = display.Text + boton.Text;
+                }
             }
         }
 
@@ -45,23 +53,124 @@ namespace Calculadora
         {
             Button boton = (Button)sender;
             operacion = boton.Text;
-            operando1 = Convert.ToDouble(display.Text);
+            if (display.Text.Contains('.'))
+            {
+                int posicion = display.Text.IndexOf('.');
+                double resultadoSinOperacion = Convert.ToDouble(display.Text);
+                resultadoSinOperacion /= (10 * (posicion));
+                operando1 = resultadoSinOperacion;
+            }
+            else
+            {
+                operando1 = Convert.ToDouble(display.Text);
+            }
             display.Text = "0";
         }
 
         private void igual_Click(object sender, EventArgs e)
         {
-            double operando2 = Convert.ToDouble(display.Text);
-            double resultado = 0;
-            if (operacion == "+")
+            if (display.Text == "0")
             {
-                resultado = operando1 + operando2;
+                if (display.Text.Contains('.'))
+                {
+                    int posicion = display.Text.IndexOf('.');
+                    double resultadoSinOperacion = Convert.ToDouble(display.Text);
+                    resultadoSinOperacion /= (10 * (posicion));
+                    display.Text = Convert.ToString(resultadoSinOperacion);
+                }
+                else
+                {
+                }
+                double operando2 = Convert.ToDouble(display.Text);
+                double resultado = 0;
+                if (operacion == "+")
+                {
+                    resultado = operando1 + operando2;
+                }
+                else if (operacion == "-")
+                {
+                    resultado = operando1 - operando2;
+                }
+                else if (operacion == "/")
+                {
+                    resultado = operando1 / operando2;
+                }
+                else if (operacion == "*")
+                {
+                    resultado = operando1 * operando2;
+                }
+                else if (operacion == "^")
+                {
+                    resultado = Math.Pow(operando1, operando2);
+                }
+                else if (operacion == "¬")
+                {
+                    resultado = Math.Pow(operando1, 1.0 / operando2);
+                }
+                else if (operacion == "log")
+                {
+                    resultado = Math.Log(operando1, operando2);
+                }
+                display.Text = Convert.ToString(resultado);
             }
-            else if (operacion == "-") {
-                resultado = operando1 - operando2;
+        }
+
+        private void otroBoton_Click(object sender, EventArgs e)
+        {
+            Button otro_boton = (Button)sender;
+            accion = otro_boton.Text;
+            if(accion == "AC")
+            {
+                display.Text = "0";
+            } 
+            else if(accion == "DEL")
+            {
+                if(display.Text.Length > 1)
+                {
+                    display.Text = display.Text.Remove(display.Text.Length-1, 1);
+                }
+                else if(display.Text.Length == 1 && display.Text != "0")
+                {
+                    display.Text = "0";
+                }
+            }
+            else if (accion == "x2")
+            {
+                double resultado = Convert.ToDouble(display.Text);
+                resultado *= resultado;
+                display.Text = Convert.ToString(resultado);
+            }
+            else if (accion == "-")
+            {
+                double resultado = Convert.ToDouble(display.Text);
+                resultado *= -1;
+                display.Text = Convert.ToString(resultado);
+            }
+            else if (accion == "ln")
+            {
+                double resultado = Convert.ToDouble(display.Text);
+                resultado = Math.Log(resultado, Math.E);
+                display.Text = Convert.ToString(resultado);
+            }
+            else if (accion == "sin")
+            {
+                double resultado = Convert.ToDouble(display.Text);
+                resultado = Math.Sin(resultado);
+                display.Text = Convert.ToString(resultado);
+            }
+            else if (accion == "cos")
+            {
+                double resultado = Convert.ToDouble(display.Text);
+                resultado = Math.Cos(resultado);
+                display.Text = Convert.ToString(resultado);
+            }
+            else if (accion == "tan")
+            {
+                double resultado = Convert.ToDouble(display.Text);
+                resultado = Math.Tan(resultado);
+                display.Text = Convert.ToString(resultado);
             }
 
-            display.Text = Convert.ToString(resultado);
         }
     }
 }
